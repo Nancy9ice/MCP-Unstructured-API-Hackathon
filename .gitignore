@@ -1,0 +1,6 @@
+.env
+.venv
+*.egg-info
+*.lock
+*.pyc
+*__pycache__
