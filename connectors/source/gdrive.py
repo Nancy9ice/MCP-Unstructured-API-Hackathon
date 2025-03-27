@@ -73,20 +73,14 @@ async def create_gdrive_source(
 
 
 async def prompt_create_drive_source(
-        name: str,
-        drive_id: str,
-        recursive: bool = False,
-        extensions: Optional[str] = None,
-    ) -> str:
-    """Detects when the user wants to create a Google Drive source and runs the function.
-
-    Args:
-        user_input: The user's input text.
-
-    Returns:
-        A string response confirming Google Drive source creation.
-    """
-    return await create_gdrive_source()
+    name: str,
+    drive_id: str,
+    recursive: bool = False,
+    extensions: Optional[str] = None,
+) -> str:
+    """Create a Google Drive source connector."""
+    ctx = get_current_context()  # Fetch context behind the scenes
+    return await create_gdrive_source(ctx, name, drive_id, recursive, extensions)
 
 
 async def update_gdrive_source(
