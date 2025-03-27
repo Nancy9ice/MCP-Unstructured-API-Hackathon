@@ -89,9 +89,9 @@ async def prompt_create_drive_source(
     Returns:
         String containing the created source connector information
     """
-        return f"""Please create a google drive source with this unique name, {unique_source_name}.
-            The google drive folder ID is {drive_folder_id}. The recursive status should be {recursive}.
-            The extensions should be {extensions}"""
+    return f"""Please create a google drive source with this unique name, {unique_source_name}.
+        The google drive folder ID is {drive_folder_id}. The recursive status should be {recursive}.
+        The extensions should be {extensions}."""
 
 
 
