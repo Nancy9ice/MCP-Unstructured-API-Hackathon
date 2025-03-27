@@ -9,4 +9,4 @@ def register_source_connectors(mcp: FastMCP):
     mcp.tool()(create_gdrive_source)
     mcp.tool()(update_gdrive_source)
     mcp.tool()(delete_gdrive_source)
-    prompt.tool()(prompt_create_drive_source)
+    mcp.prompt()(prompt_create_drive_source)
