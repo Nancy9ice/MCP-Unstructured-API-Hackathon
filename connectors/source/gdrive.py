@@ -73,20 +73,19 @@ async def create_gdrive_source(
 
 
 async def prompt_create_drive_source(
-        unique_name_of_gdrive_source: str,
-        drive_folder_id: str,
-        recursive: bool = False,
-        extensions: Optional[str] = None,
-    ) -> str:
-    """Detects when the user wants to create a Google Drive source and runs the function.
-
-    Args:
-        user_input: The user's input text.
-
-    Returns:
-        A string response confirming Google Drive source creation.
-    """
-    return await create_gdrive_source(ctx, unique_name_of_gdrive_source, drive_folder_id, recursive, extensions)
+    ctx: Context,  # Automatically provided by MCP, not shown to user
+    unique_name_of_gdrive_source: str,
+    drive_folder_id: str,
+    recursive: bool = False,
+    extensions: Optional[str] = None,
+) -> str:
+    return await create_gdrive_source(
+        ctx, 
+        name=unique_name_of_gdrive_source, 
+        drive_id=drive_folder_id, 
+        recursive=recursive, 
+        extensions=extensions
+    )
 
 
 async def update_gdrive_source(
