@@ -73,8 +73,8 @@ async def create_gdrive_source(
 
 
 async def prompt_create_drive_source(
-    name: str,
-    drive_id: str,
+    unique_source_name: str,
+    drive_folder_id: str,
     recursive: bool = False,
     extensions: Optional[str] = None,
 ) -> str:
@@ -89,24 +89,9 @@ async def prompt_create_drive_source(
     Returns:
         String containing the created source connector information
     """
-    # Use the client from the global context directly
-    client = request_context.lifespan_context.client
-    config = _prepare_gdrive_source_config(drive_id, recursive, extensions)
-    source_connector = CreateSourceConnector(name=name, type="google_drive", config=config)
-
-    try:
-        response = await client.sources.create_source_async(
-            request=CreateSourceRequest(create_source_connector=source_connector),
-        )
-        result = create_log_for_created_updated_connector(
-            response,
-            connector_name="GoogleDrive",
-            connector_type="Source",
-            created_or_updated="Created",
-        )
-        return result
-    except Exception as e:
-        return f"Error creating gdrive source connector: {str(e)}"
+        return f"""Please create a google drive source with this unique name, {unique_source_name}.
+            The google drive folder ID is {drive_folder_id}. The recursive status should be {recursive}.
+            The extensions should be {extensions}"""
 
 
 
