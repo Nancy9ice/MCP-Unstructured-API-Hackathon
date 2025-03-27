@@ -86,11 +86,7 @@ async def prompt_create_drive_source(
     Returns:
         A string response confirming Google Drive source creation.
     """
-    if "create google drive source" in user_input.lower():
-
-        return await create_gdrive_source(ctx, unique_name_of_gdrive_source, drive_folder_id, recursive, extensions)
-
-    return "I didn't understand your request."
+    return await create_gdrive_source(ctx, unique_name_of_gdrive_source, drive_folder_id, recursive, extensions)
 
 
 async def update_gdrive_source(
