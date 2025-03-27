@@ -73,11 +73,11 @@ async def create_gdrive_source(
 
 
 async def prompt_create_drive_source(
+    ctx: Context,
     name: str,
     drive_id: str,
     recursive: bool = False,
     extensions: Optional[str] = None,
-    ctx: Context
 ) -> str:
     """Create an gdrive source connector.
 
