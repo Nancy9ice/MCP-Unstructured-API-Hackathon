@@ -79,7 +79,7 @@ async def prompt_create_drive_source(
     extensions: Optional[str] = None,
 ) -> str:
     """Create a Google Drive source connector."""
-    return await create_gdrive_source(ctx:Context, name, drive_id, recursive, extensions)
+    return await create_gdrive_source(Context, name, drive_id, recursive, extensions)
 
 
 async def update_gdrive_source(
