@@ -78,9 +78,19 @@ async def prompt_create_drive_source(
     recursive: bool = False,
     extensions: Optional[str] = None,
 ) -> str:
-    """Create a Google Drive source connector."""
-    ctx = get_current_context()  # Fetch context behind the scenes
-    return await create_gdrive_source(ctx, name, drive_id, recursive, extensions)
+    """User-facing prompt to create a Google Drive source."""
+    # Get context from MCP's prompt handling
+    ctx = getattr(mcp, 'get_context', lambda: None)()
+    if ctx is None:
+        ctx = Context()  # Fallback for testing
+    
+    return await create_gdrive_source(
+        ctx=ctx,
+        name=name,
+        drive_id=drive_id,
+        recursive=recursive,
+        extensions=extensions
+    )
 
 
 async def update_gdrive_source(
