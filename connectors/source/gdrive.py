@@ -77,6 +77,7 @@ async def prompt_create_drive_source(
     drive_id: str,
     recursive: bool = False,
     extensions: Optional[str] = None,
+    ctx: Context
 ) -> str:
     """Create an gdrive source connector.
 
@@ -88,12 +89,12 @@ async def prompt_create_drive_source(
     Returns:
         String containing the created source connector information
     """
-    # client = Context.request_context.lifespan_context.client
+    client = Context.request_context.lifespan_context.client
     config = _prepare_gdrive_source_config(drive_id, recursive, extensions)
     source_connector = CreateSourceConnector(name=name, type="google_drive", config=config)
 
     try:
-        response = await sources.create_source_async(
+        response = await client.sources.create_source_async(
             request=CreateSourceRequest(create_source_connector=source_connector),
         )
         result = create_log_for_created_updated_connector(
