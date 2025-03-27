@@ -73,23 +73,24 @@ async def create_gdrive_source(
 
 
 async def prompt_create_drive_source(
-    ctx: Context,
     name: str,
     drive_id: str,
     recursive: bool = False,
     extensions: Optional[str] = None,
 ) -> str:
-    """Create an gdrive source connector.
+    """Create a gdrive source connector.
 
     Args:
         name: A unique name for this connector
-        remote_url: The gdrive URI to the bucket or folder (e.g., gdrive://my-bucket/)
-        recursive: Whether to access subfolders within the bucket
+        drive_id: The Google Drive ID to connect to
+        recursive: Whether to access subfolders within the drive
+        extensions: Optional file extensions to filter
 
     Returns:
         String containing the created source connector information
     """
-    client = Context.request_context.lifespan_context.client
+    # Use the client from the global context directly
+    client = request_context.lifespan_context.client
     config = _prepare_gdrive_source_config(drive_id, recursive, extensions)
     source_connector = CreateSourceConnector(name=name, type="google_drive", config=config)
 
