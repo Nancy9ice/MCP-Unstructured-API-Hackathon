@@ -73,10 +73,8 @@ async def create_gdrive_source(
 
 
 async def prompt_create_drive_source(
-        ctx: Context, 
-        user_input: str,
-        name: str,
-        drive_id: str,
+        unique_name_of_gdrive_source: str,
+        drive_folder_id: str,
         recursive: bool = False,
         extensions: Optional[str] = None,
     ) -> str:
@@ -90,7 +88,7 @@ async def prompt_create_drive_source(
     """
     if "create google drive source" in user_input.lower():
 
-        return await create_gdrive_source(ctx, name, drive_id, recursive, extensions)
+        return await create_gdrive_source(ctx, unique_name_of_gdrive_source, drive_folder_id, recursive, extensions)
 
     return "I didn't understand your request."
 
