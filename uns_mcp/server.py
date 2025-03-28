@@ -139,7 +139,7 @@ async def prompt_list_sources(
     base_instruction = "List all source connectors including their IDs"
     
     if source_type:
-        return f"{base_instruction}, filtering only for {source_type} type sources."
+        return f"{base_instruction}, filtering only for {optional_source_type} type sources."
     return f"{base_instruction}."
 
 
