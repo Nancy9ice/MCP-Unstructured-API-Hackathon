@@ -124,6 +124,24 @@ async def list_sources(ctx: Context, source_type: Optional[str] = None) -> str:
     return "\n".join(result)
 
 
+@mcp.prompt()
+async def prompt_list_sources(
+    optional_source_type: Optional[str] = None
+) -> str:
+    """A prompt template to list sources.
+
+    Args:
+        optional_source_type: Optional source connector type to filter by
+
+    Returns:
+        String containing the information needed to list all sources
+    """
+    if optional_source_type:
+        return f"List all source connectors and their IDs with the {optional_source_type} source type."
+    else:
+        return "List all source connectors including their IDs."
+
+
 @mcp.tool()
 async def get_source_info(ctx: Context, source_id: str) -> str:
     """Get detailed information about a specific source connector.
@@ -184,6 +202,24 @@ async def list_destinations(ctx: Context, destination_type: Optional[str] = None
         result.append(f"- {dest.name} (ID: {dest.id})")
 
     return "\n".join(result)
+
+
+@mcp.prompt()
+async def prompt_list_destinations(
+    optional_destination_type: Optional[str] = None
+) -> str:
+    """A prompt template to list destinations.
+
+    Args:
+        optional_destination_type: Optional destination connector type to filter by
+
+    Returns:
+        String containing the information needed to list all destinations
+    """
+    if optional_destination_type:
+        return f"List all destination connectors and their IDs with the {optional_destination_type} destination type."
+    else:
+        return "List all destination connectors including their IDs."
 
 
 @mcp.tool()
@@ -258,6 +294,43 @@ async def list_workflows(
         result.append(f"- {workflow.name} (ID: {workflow.id})")
 
     return "\n".join(result)
+
+
+@mcp.prompt()
+async def prompt_list_workflows(
+    optional_destination_id: Optional[str] = None,
+    optional_source_id: Optional[str] = None,
+    optional_status: Optional[str] = None,
+) -> str:
+    """A prompt template to list all workflows.
+
+    Args:
+        optional_destination_id: Optional destination connector ID to filter by
+        optional_source_id: Optional source connector ID to filter by
+        optional_status: Optional workflow status to filter by
+
+    Returns:
+        String containing the information needed to list all workflows
+    """
+    filters = []
+    
+    if destination_id:
+        filters.append(f"destination ID '{destination_id}'")
+    if source_id:
+        filters.append(f"source ID '{source_id}'")
+    if status:
+        filters.append(f"status '{status}'")
+
+    if not filters:
+        return "Please list all workflows including their IDs."
+    
+    if len(filters) == 1:
+        return f"Please list all workflows including their IDs with {filters[0]}."
+    
+    if len(filters) == 2:
+        return f"Please list all workflows including their IDs with {filters[0]} and {filters[1]}."
+    
+    return f"Please list all workflows including their IDs with {', '.join(filters[:-1])}, and {filters[-1]}."
 
 
 @mcp.tool()
@@ -358,6 +431,21 @@ async def run_workflow(ctx: Context, workflow_id: str) -> str:
         return f"Workflow execution initiated: {response.raw_response}"
     except Exception as e:
         return f"Error running workflow: {str(e)}"
+
+
+@mcp.prompt()
+async def prompt_run_workflow(
+    workflow_id: str
+) -> str:
+    """A prompt template to run a specific workflow.
+
+    Args:
+        workflow_id: ID of the workflow
+
+    Returns:
+        String containing the information needed to run a workflow
+    """
+    return f"Run the workflow with this ID: {workflow_id}"
 
 
 @mcp.tool()

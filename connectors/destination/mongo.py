@@ -74,6 +74,25 @@ async def create_mongodb_destination(
         return f"Error creating MongoDB destination connector: {str(e)}"
 
 
+async def prompt_create_mongodb_destination(
+    unique_destination_name: str,
+    mongodb_database: str,
+    mongodb_collection: str,
+) -> str:
+    """A prompt template to create a mongodb destination connector.
+
+    Args:
+        unique_destination_name: A unique name for this connector
+        mongodb_database: The name of the database to connect to.
+        mongodb_collection: The name of the target MongoDB collection
+
+    Returns:
+        String containing the destination connector information to be created
+    """
+    return f"""Please create a mongodb destination connector with the unique name, {unique_destination_name}.
+        The mongodb database name is {mongodb_database}. The mongodb collection is {mongodb_collection}."""
+
+
 async def update_mongodb_destination(
     ctx: Context,
     destination_id: str,

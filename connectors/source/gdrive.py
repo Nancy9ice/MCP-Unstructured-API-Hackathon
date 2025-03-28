@@ -72,13 +72,13 @@ async def create_gdrive_source(
         return f"Error creating gdrive source connector: {str(e)}"
 
 
-async def prompt_create_drive_source(
+async def prompt_create_google_drive_source(
     unique_source_name: str,
     drive_folder_id: str,
     recursive: bool = False,
     extensions: Optional[str] = None,
 ) -> str:
-    """Create a gdrive source connector.
+    """A prompt template to create a gdrive source connector.
 
     Args:
         name: A unique name for this connector

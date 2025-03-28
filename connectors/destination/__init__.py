@@ -7,9 +7,11 @@ def register_destination_connectors(mcp: FastMCP):
         create_mongodb_destination,
         delete_mongodb_destination,
         update_mongodb_destination,
+        prompt_create_mongodb_destination
     )
 
     # Register MongoDB destination connector tools
     mcp.tool()(create_mongodb_destination)
     mcp.tool()(update_mongodb_destination)
     mcp.tool()(delete_mongodb_destination)
+    mcp.prompt()(prompt_create_mongodb_destination)
