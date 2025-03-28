@@ -136,10 +136,11 @@ async def prompt_list_sources(
     Returns:
         String containing the information needed to list all sources
     """
-    if optional_source_type:
-        return f"List all source connectors and their IDs with the {optional_source_type} source type."
-    else:
-        return "List all source connectors including their IDs."
+    base_instruction = "List all source connectors including their IDs"
+    
+    if source_type:
+        return f"{base_instruction}, filtering only for {source_type} type sources."
+    return f"{base_instruction}."
 
 
 @mcp.tool()
