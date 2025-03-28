@@ -316,11 +316,11 @@ async def prompt_list_workflows(
     filters = []
     
     if destination_id:
-        filters.append(f"destination ID '{destination_id}'")
+        filters.append(f"destination ID '{optional_destination_id}'")
     if source_id:
-        filters.append(f"source ID '{source_id}'")
+        filters.append(f"source ID '{optional_source_id}'")
     if status:
-        filters.append(f"status '{status}'")
+        filters.append(f"status '{optional_status}'")
 
     if not filters:
         return "Please list all workflows including their IDs."
