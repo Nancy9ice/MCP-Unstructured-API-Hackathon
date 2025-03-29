@@ -658,6 +658,108 @@ def kongapay_september_autoreversals():
         }
 
 
+@mcp.resource("transactions://opay/airtime_purchases/march")
+def opay_march_airtime_purchases():
+    try:
+        printer = PrettyPrinter()
+
+        transaction_data_collection = get_mongodb_connection()
+
+        result = transaction_data_collection.aggregate([
+            {
+                "$search": {
+                    "index": "search-text-index",
+                    "compound": {  # Requires ALL terms to match
+                        "must": [
+                            { "text": { "query": "opay", "path": "text" } },
+                            { "text": { "query": "airtime", "path": "text" } },
+                            { "text": { "query": "march", "path": "text" } }
+                        ]
+                    }
+                }
+            },
+            {
+                "$project": {
+                    "text": 1,
+                    "_id": 0
+                }
+            }
+        ])
+        results = list(result)
+        return {
+            "metadata": {
+                "resource": "transactions://opay/airtime_purchases/march",
+                "description": "Opay airtime purchases in March"
+            },
+            "data": results,
+            "analysis_prompt": """
+                Analyze these Opay airtime purchases and provide:
+                1. Total amount spent
+                2. Total number of purchases
+            """
+        }
+        
+    except Exception as e:
+        return {
+            "error": str(e),
+            "metadata": {
+                "resource": "transactions://opay/airtime_purchases/march",
+                "status": "failed"
+            }
+        }
+
+
+@mcp.resource("transactions://pocketapp/electricity_bills")
+def pocketapp_electricity_bill_transactions():
+    try:
+        printer = PrettyPrinter()
+
+        transaction_data_collection = get_mongodb_connection()
+
+        result = transaction_data_collection.aggregate([
+            {
+                "$search": {
+                    "index": "search-text-index",
+                    "compound": {  # Requires ALL terms to match
+                        "must": [
+                            { "text": { "query": "pocketapp", "path": "text" } },
+                            { "text": { "query": "electricity", "path": "text" } }
+                        ]
+                    }
+                }
+            },
+            {
+                "$project": {
+                    "text": 1,
+                    "_id": 0,
+                    "score": { "$meta": "searchScore" }
+                }
+            }
+        ])
+        results = list(result)
+        return {
+            "metadata": {
+                "resource": "transactions://pocketapp/electricity_bills",
+                "description": "Pocketapp electricity bills"
+            },
+            "data": results,
+            "analysis_prompt": """
+                Analyze these electricity bill transactions on Pocketapp and provide:
+                1. Total amount spent
+                2. Total number of purchases
+            """
+        }
+        
+    except Exception as e:
+        return {
+            "error": str(e),
+            "metadata": {
+                "resource": "transactions://pocketapp/electricity_bills",
+                "status": "failed"
+            }
+        }
+
+
 
 def create_starlette_app(mcp_server: Server, *, debug: bool = False) -> Starlette:
     """Create a Starlette application that can server the provied mcp server with SSE."""
