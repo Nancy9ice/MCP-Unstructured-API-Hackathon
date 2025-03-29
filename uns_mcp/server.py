@@ -607,63 +607,55 @@ async def cancel_job(ctx: Context, job_id: str) -> str:
         return f"Error canceling job: {str(e)}"
 
 
-@mcp.resource("users://{user_id}/profile")
-def get_user_profile(user_id: str) -> str:
-    """Dynamic user data"""
-    return f"Profile data for user {user_id}"
+@mcp.resource("transactions://kongapay/autoreversals/september")
+def kongapay_september_autoreversals():
+    try:
+        printer = PrettyPrinter()
 
+        transaction_data_collection = get_mongodb_connection()
 
-def resource_bank_autoreversals(bank, month):
-    @mcp.resource("transactions://bank/autoreversals/month")
-    def bank_month_autoreversals():
-        try:
-            printer = PrettyPrinter()
-
-            transaction_data_collection = get_mongodb_connection()
-
-            result = transaction_data_collection.aggregate([
-                {
-                    "$search": {
-                        "index": "search-text-index",
-                        "compound": {  # Requires ALL terms to match
-                            "must": [
-                                { "text": { "query": bank, "path": "text" } },
-                                { "text": { "query": "Auto-Reversal", "path": "text" } },
-                                { "text": { "query": month, "path": "text" } }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "$project": {
-                        "text": 1,
-                        "_id": 0
+        result = transaction_data_collection.aggregate([
+            {
+                "$search": {
+                    "index": "search-text-index",
+                    "compound": {  # Requires ALL terms to match
+                        "must": [
+                            { "text": { "query": "kongapay", "path": "text" } },
+                            { "text": { "query": "Auto-Reversal", "path": "text" } },
+                            { "text": { "query": "september", "path": "text" } }
+                        ]
                     }
                 }
-            ])
-            results = list(result)
-            return {
-                "metadata": {
-                    "resource": f"transactions://{bank}/autoreversals/{month}",
-                    "description": f"{bank.capitalize()} autoreversals during {month.capitalize()}"
-                },
-                "data": results,
-                "analysis_prompt": f"""
-                    Analyze these {bank.capitalize()} autoreversal transactions and provide:
-                    1. Total amount spent
-                    2. Total number of purchases
-                """
-            }
-                
-        except Exception as e:
-            return {
-                "error": str(e),
-                "metadata": {
-                    "resource": f"transactions://{bank}/autoreversals/{month.lower()}",
-                    "status": "failed"
+            },
+            {
+                "$project": {
+                    "text": 1,
+                    "_id": 0
                 }
             }
-    return bank_month_autoreversals
+        ])
+        results = list(result)
+        return {
+            "metadata": {
+                "resource": "transactions://kongapay/autoreversals/september",
+                "description": "Kongapay autoreversals during September"
+            },
+            "data": results,
+            "analysis_prompt": """
+                Analyze these Kongapay autoreversal transactions and provide:
+                1. Total amount spent
+                2. Total number of purchases
+            """
+        }
+        
+    except Exception as e:
+        return {
+            "error": str(e),
+            "metadata": {
+                "resource": "transactions://kongapay/autoreversals/september",
+                "status": "failed"
+            }
+        }
 
 
 @mcp.resource("transactions://opay/airtime_purchases/march")
