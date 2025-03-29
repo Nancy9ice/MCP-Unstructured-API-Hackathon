@@ -1,6 +1,6 @@
 # MCP-Unstructured-API-Hackathon
 
-## Spendings Tracker
+## Transaction Tracker
 
 This project was built as an inspiration from the [hackathon](https://unstructured.io/blog/unstructured-mcp-virtual-hackathon-build-share-and-win) hosted by [Unstructured](https://unstructured.io/).
 
