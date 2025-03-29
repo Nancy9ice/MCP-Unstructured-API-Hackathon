@@ -613,12 +613,68 @@ async def cancel_job(ctx: Context, job_id: str) -> str:
 
 
 @mcp.resource("transactions://bank/autoreversals/month")
-def bank_month_autoreversals():
+def bank_month_autoreversals(bank="kongapay", month="september"):
     try:
+        # Input validation
+        if not bank or not month:
+            raise ValueError("Bank and month parameters cannot be empty")
+        
+        transaction_data_collection = get_mongodb_connection()
+        
+        query_result = transaction_data_collection.aggregate([
+            {
+                "$search": {
+                    "index": "search-text-index",
+                    "compound": {
+                        "must": [
+                            { "text": { "query": bank.lower(), "path": "text" } },
+                            { "text": { "query": "Auto-Reversal", "path": "text", "caseSensitive": False } },
+                            { "text": { "query": month.lower(), "path": "text" } }
+                        ]
+                    }
+                }
+            },
+            {
+                "$project": {
+                    "text": 1,
+                    "_id": 0
+                }
+            }
+        ])
+        
+        results_list = list(query_result)
+        
+        return {
+            "metadata": {
+                "resource": "transactions://bank/autoreversals/month",
+                "description": f"{bank} autoreversals during {month}"
+            },
+            "data": results_list,
+            "analysis_prompt": f"""
+                Analyze these {bank} autoreversal transactions and provide:
+                1. Total amount spent
+                2. Total number of purchases
+            """
+        }
+        
+    except Exception as e:
+        return {
+            "error": str(e),
+            "metadata": {
+                "resource": "transactions://bank/autoreversals/month",
+                "status": "failed"
+            }
+        }
 
+
+@mcp.resource("transactions://bank/airtime_purchases/month")
+def bank_month_airtime_purchases():
+    try:
+        
         ## Please edit these variables below to your choice
-        bank = "kongapay"
-        month = "september"
+
+        bank = "opay"
+        month = "march"
 
         transaction_data_collection = get_mongodb_connection()
 
@@ -629,7 +685,7 @@ def bank_month_autoreversals():
                     "compound": {  # Requires ALL terms to match
                         "must": [
                             { "text": { "query": bank, "path": "text" } },
-                            { "text": { "query": "Auto-Reversal", "path": "text" } },
+                            { "text": { "query": "airtime", "path": "text" } },
                             { "text": { "query": month, "path": "text" } }
                         ]
                     }
@@ -645,12 +701,12 @@ def bank_month_autoreversals():
         results = list(result)
         return {
             "metadata": {
-                "resource": "transactions://bank/autoreversals/month",
-                "description": f"{bank} autoreversals during {month}"
+                "resource": "transactions://bank/airtime_purchases/month",
+                "description": f"{bank} airtime purchases in {month}"
             },
             "data": results,
             "analysis_prompt": f"""
-                Analyze these {bank} autoreversal transactions and provide:
+                Analyze these {bank} airtime purchases and provide:
                 1. Total amount spent
                 2. Total number of purchases
             """
@@ -660,16 +716,20 @@ def bank_month_autoreversals():
         return {
             "error": str(e),
             "metadata": {
-                "resource": "ttransactions://bank/autoreversals/month",
+                "resource": "transactions://bank/airtime_purchases/month",
                 "status": "failed"
             }
         }
 
 
-@mcp.resource("transactions://opay/airtime_purchases/march")
-def opay_march_airtime_purchases():
+@mcp.resource("transactions://bank/electricity_bills")
+def bank_electricity_bill_transactions():
     try:
         
+        ## Please edit these variables below to your choice
+
+        bank = "pocketapp"
+
         transaction_data_collection = get_mongodb_connection()
 
         result = transaction_data_collection.aggregate([
@@ -678,9 +738,8 @@ def opay_march_airtime_purchases():
                     "index": "search-text-index",
                     "compound": {  # Requires ALL terms to match
                         "must": [
-                            { "text": { "query": "opay", "path": "text" } },
-                            { "text": { "query": "airtime", "path": "text" } },
-                            { "text": { "query": "march", "path": "text" } }
+                            { "text": { "query": bank, "path": "text" } },
+                            { "text": { "query": "electricity", "path": "text" } }
                         ]
                     }
                 }
@@ -695,12 +754,12 @@ def opay_march_airtime_purchases():
         results = list(result)
         return {
             "metadata": {
-                "resource": "transactions://opay/airtime_purchases/march",
-                "description": "Opay airtime purchases in March"
+                "resource": "transactions://bank/electricity_bills",
+                "description": f"{bank} electricity bills"
             },
             "data": results,
-            "analysis_prompt": """
-                Analyze these Opay airtime purchases and provide:
+            "analysis_prompt": f"""
+                Analyze these electricity bill transactions on {bank} and provide:
                 1. Total amount spent
                 2. Total number of purchases
             """
@@ -710,57 +769,7 @@ def opay_march_airtime_purchases():
         return {
             "error": str(e),
             "metadata": {
-                "resource": "transactions://opay/airtime_purchases/march",
-                "status": "failed"
-            }
-        }
-
-
-@mcp.resource("transactions://pocketapp/electricity_bills")
-def pocketapp_electricity_bill_transactions():
-    try:
-
-        transaction_data_collection = get_mongodb_connection()
-
-        result = transaction_data_collection.aggregate([
-            {
-                "$search": {
-                    "index": "search-text-index",
-                    "compound": {  # Requires ALL terms to match
-                        "must": [
-                            { "text": { "query": "pocketapp", "path": "text" } },
-                            { "text": { "query": "electricity", "path": "text" } }
-                        ]
-                    }
-                }
-            },
-            {
-                "$project": {
-                    "text": 1,
-                    "_id": 0,
-                    "score": { "$meta": "searchScore" }
-                }
-            }
-        ])
-        results = list(result)
-        return {
-            "metadata": {
-                "resource": "transactions://pocketapp/electricity_bills",
-                "description": "Pocketapp electricity bills"
-            },
-            "data": results,
-            "analysis_prompt": """
-                Analyze these electricity bill transactions on Pocketapp and provide:
-                1. Total amount spent
-                2. Total number of purchases
-            """
-        }
-        
-    except Exception as e:
-        return {
-            "error": str(e),
-            "metadata": {
-                "resource": "transactions://pocketapp/electricity_bills",
+                "resource": "transactions://bank/electricity_bills",
                 "status": "failed"
             }
         }
