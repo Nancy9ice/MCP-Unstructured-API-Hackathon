@@ -607,8 +607,8 @@ async def cancel_job(ctx: Context, job_id: str) -> str:
         return f"Error canceling job: {str(e)}"
 
 
-@mcp.resource("transactions://kongapay/autoreversals/september")
-def kongapay_september_autoreversals():
+@mcp.resource("transactions://{bank}/autoreversals/{month}")
+def bank_month_autoreversals(bank: str, month: str) -> str:
     try:
         printer = PrettyPrinter()
 
@@ -620,9 +620,9 @@ def kongapay_september_autoreversals():
                     "index": "search-text-index",
                     "compound": {  # Requires ALL terms to match
                         "must": [
-                            { "text": { "query": "kongapay", "path": "text" } },
+                            { "text": { "query": bank, "path": "text" } },
                             { "text": { "query": "Auto-Reversal", "path": "text" } },
-                            { "text": { "query": "september", "path": "text" } }
+                            { "text": { "query": month, "path": "text" } }
                         ]
                     }
                 }
@@ -637,22 +637,22 @@ def kongapay_september_autoreversals():
         results = list(result)
         return {
             "metadata": {
-                "resource": "transactions://kongapay/autoreversals/september",
-                "description": "Kongapay autoreversals during September"
+                "resource": f"transactions://{bank}/autoreversals/{month}",
+                "description": f"{bank.capitalize()} autoreversals during {month.capitalize()}"
             },
             "data": results,
-            "analysis_prompt": """
-                Analyze these Kongapay autoreversal transactions and provide:
+            "analysis_prompt": f"""
+                Analyze these {bank.capitalize()} autoreversal transactions and provide:
                 1. Total amount spent
                 2. Total number of purchases
             """
         }
-        
+            
     except Exception as e:
         return {
             "error": str(e),
             "metadata": {
-                "resource": "transactions://kongapay/autoreversals/september",
+                "resource": f"transactions://{bank}/autoreversals/{month.lower()}",
                 "status": "failed"
             }
         }
