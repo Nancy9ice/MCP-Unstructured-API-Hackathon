@@ -48,13 +48,20 @@ from pprint import PrettyPrinter
 def get_mongodb_connection():
     load_dotenv(override=True)
 
+    # Fixed variable names
     mongodb_connection_string = os.environ.get("MONGO_DB_CONNECTION_STRING")
-    mongdb_database = os.environ.get("MONGO_DB_DATABASE")
-    mongdodb_collection = os.environ.get("MONGO_DB_COLLECTION")
+    mongodb_database = os.environ.get("MONGO_DB_DATABASE")  # Fixed typo
+    mongodb_collection = os.environ.get("MONGO_DB_COLLECTION")  # Fixed typo
 
-    client = MongoClient(mongodb_connection_string)
+    # Validate environment variables
+    if not all([mongodb_connection_string, mongodb_database, mongodb_collection]):
+        raise ValueError("Missing MongoDB environment variables")
 
-    return client.mongdb_database.mongdodb_collection
+    try:
+        client = MongoClient(mongodb_connection_string)
+        return client[mongodb_database][mongodb_collection]
+    except Exception as e:
+        raise ConnectionError(f"Failed to connect to MongoDB: {str(e)}")
 
 
 def load_environment_variables() -> None:
@@ -613,23 +620,24 @@ async def cancel_job(ctx: Context, job_id: str) -> str:
 
 
 @mcp.resource("transactions://bank/autoreversals/month")
-def bank_month_autoreversals(bank="kongapay", month="september"):
+def bank_month_autoreversals():
     try:
-        # Input validation
-        if not bank or not month:
-            raise ValueError("Bank and month parameters cannot be empty")
-        
+
+        ## Please edit these variables below to your choice
+        bank = "kongapay"
+        month = "september"
+
         transaction_data_collection = get_mongodb_connection()
-        
-        query_result = transaction_data_collection.aggregate([
+
+        result = transaction_data_collection.aggregate([
             {
                 "$search": {
                     "index": "search-text-index",
-                    "compound": {
+                    "compound": {  # Requires ALL terms to match
                         "must": [
-                            { "text": { "query": bank.lower(), "path": "text" } },
-                            { "text": { "query": "Auto-Reversal", "path": "text", "caseSensitive": False } },
-                            { "text": { "query": month.lower(), "path": "text" } }
+                            { "text": { "query": bank, "path": "text" } },
+                            { "text": { "query": "Auto-Reversal", "path": "text" } },
+                            { "text": { "query": month, "path": "text" } }
                         ]
                     }
                 }
@@ -641,15 +649,13 @@ def bank_month_autoreversals(bank="kongapay", month="september"):
                 }
             }
         ])
-        
-        results_list = list(query_result)
-        
+        results = list(result)
         return {
             "metadata": {
                 "resource": "transactions://bank/autoreversals/month",
                 "description": f"{bank} autoreversals during {month}"
             },
-            "data": results_list,
+            "data": results,
             "analysis_prompt": f"""
                 Analyze these {bank} autoreversal transactions and provide:
                 1. Total amount spent
