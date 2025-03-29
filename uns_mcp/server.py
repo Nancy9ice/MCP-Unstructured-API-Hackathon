@@ -704,3 +704,9 @@ def kongapay_september_autoreversals():
                 "status": "failed"
             }
         }
+
+
+@mcp.resource("config://app")
+def get_config() -> str:
+    """Static configuration data"""
+    return "App configuration here"
