@@ -47,8 +47,9 @@ async def create_gdrive_source(
 
     Args:
         name: A unique name for this connector
-        remote_url: The gdrive URI to the bucket or folder (e.g., gdrive://my-bucket/)
+        drive_id: The folder ID of the Google Drive folder you're interested in
         recursive: Whether to access subfolders within the bucket
+        extensions: Extension of the files you're interested in copying and transforming
 
     Returns:
         String containing the created source connector information
