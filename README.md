@@ -12,11 +12,15 @@ It's almost the end of the month and salary comes in. However, it's just one wee
 
 I'm sitting and wondering what and where and how I have spent the money but I can't seem to understand what I spent it on. Looking at my account statement can be hectic as the numbers dance around my head but I still can't figure out what ate into the money.
 
-Who will help me summarize my account statement just so I can be tracking my spendings. I don't have the luxury of doing that myself and I can't pay someone to do that. I mean, I'm trying to cut cost here. So what could help me?
+Who will help me summarize my account statement just so I can be tracking my spendings. I don't have the luxury of doing that myself and I can't pay someone to do that. I mean, I'm trying to cut cost here. 
+
+**Is this a problem you can relate to?**
+
+If yes, what could help you and I?
 
 An AI Assistant? Hmmmmmm. Probably.
 
-But how can this AI assistant get this account statement in pdf formats and still interpret my account statement properly after I ask it certain questions.
+But how can this AI assistant get this account statement in pdf formats and still interpret our account statements properly after we ask it certain questions.
 
 That's the problem I intend to solve.
 
@@ -28,7 +32,7 @@ I'm not an AI engineer at least not for now (or anytime soon). I'm just playing 
 
 Now that you're aware of that. Let me brief you on my solution to the problem I described above.
 
-With the help of Unstructured API and FastMCP, I built an MCP server that interfaces with Claude Desktop so that you can move multiple pdf files containing your account statements and transaction history (whether from same bank or multiple banks) from Google Drive to MongoDB. Before the movement to MongoDB, some transformations were made on the data using features on Unstructured.
+With the help of Unstructured API and FastMCP, I built an MCP server that interfaces with Claude Desktop so that you can move multiple pdf files containing your account statements and transaction history (whether from same bank or multiple banks) from Google Drive to MongoDB. Before the movement to MongoDB, some transformations were made on the data using features on Unstructured (P.S. Unstructured is a Product).
 
 The following features in Unstructured made the data usable:
 
@@ -38,9 +42,9 @@ The following features in Unstructured made the data usable:
 
 - Enrichment: This feature was important to me because I didn't want to build a RAG application if I used embeddings. Instead, I skipped the embeddings feature and used this enrichment feature to summarize my data using an integrated Large Language Model. This made it easy to summarize the information on the account statements which were then sent to the Mongodb destination.
 
-The good thing about this solution I built is that you can do every single thing from Claude Desktop from creating the Google Drive Source to moving the summarized information to MongoDB to asking Claude questions about your transaction history. Except of course the part of creating a search index on the MongoDB interface so that querying the database to answer your questions can be easy and more informative.
+The good thing about this solution is that you can do every single thing from Claude Desktop from creating the Google Drive Source to moving the summarized information to MongoDB to asking Claude questions about your transaction history. Except of course the part of creating a search index on the MongoDB interface so that querying the database to answer your questions can be easy and more informative.
 
-In summary, here's what you can do with this solution I built leveraging Unstructured API and FastMCP:
+In summary, here's what you can do with this solution leveraging Unstructured API and FastMCP:
 
 - Create a Google Drive source containing your account statements directly from Claude Desktop
 
@@ -55,6 +59,8 @@ In summary, here's what you can do with this solution I built leveraging Unstruc
 - Trigger or run the workflow directly from Claude Desktop
 
 - Ask questions on Claude Desktop about your transaction history
+
+- And more...
 
 Now I'll get into the details on how to set this up.
 
