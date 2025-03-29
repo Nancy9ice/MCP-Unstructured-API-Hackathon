@@ -606,10 +606,12 @@ async def cancel_job(ctx: Context, job_id: str) -> str:
     except Exception as e:
         return f"Error canceling job: {str(e)}"
 
-@mcp.resource("greeting://Alice")
-def get_greeting(name: str) -> str:
-    """Get a personalized greeting"""
-    return f"Hello, {name}!"
+
+def create_greeting_resource(name):
+    @mcp.resource("greeting://{name}")
+    def get_greeting(name: str) -> str:
+        """Get a personalized greeting"""
+        return f"Hello, {name}!"
 
 
 @mcp.resource("transactions://bank/autoreversals/month")
