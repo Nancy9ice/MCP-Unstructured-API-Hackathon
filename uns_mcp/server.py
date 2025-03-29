@@ -42,6 +42,17 @@ from unstructured_client.models.shared.createworkflow import CreateWorkflowTyped
 
 from connectors import register_connectors
 
+from pymongo import MongoClient
+from pprint import PrettyPrinter
+
+printer = PrettyPrinter()
+
+def get_mongodb_connection():
+    load_dotenv(override=True)
+    mongodb_connection_string = os.environ.get("MONGO_DB_CONNECTION_STRING")
+    client = MongoClient(mongodb_connection_string)
+    return client.sample_mflix.mcp_unstructured_api_db
+
 
 def load_environment_variables() -> None:
     """
@@ -644,3 +655,54 @@ if __name__ == "__main__":
         starlette_app = create_starlette_app(mcp_server, debug=True)
 
         uvicorn.run(starlette_app, host=args.host, port=args.port)
+
+
+@mcp.resource("transactions://opay/airtime/march")
+def kongapay_september_autoreversals():
+    try:
+        printer = PrettyPrinter()
+
+        transaction_data_collection = get_mongodb_connection()
+
+        result = transaction_data_collection.aggregate([
+            {
+                "$search": {
+                    "index": "search-text-index",
+                    "compound": {  # Requires ALL terms to match
+                        "must": [
+                            { "text": { "query": "kongapay", "path": "text" } },
+                            { "text": { "query": "Auto-Reversal", "path": "text" } },
+                            { "text": { "query": "september", "path": "text" } }
+                        ]
+                    }
+                }
+            },
+            {
+                "$project": {
+                    "text": 1,
+                    "_id": 0
+                }
+            }
+        ])
+        results = list(result)
+        printer.pprint({
+            "metadata": {
+                "resource": "transactions://opay/airtime/march",
+                "description": "Opay airtime purchases during March"
+            },
+            "data": results,
+            "analysis_prompt": """
+                Analyze these Opay airtime purchases and provide:
+                1. Total amount spent
+                2. Total number of purchases
+            """
+        })
+        
+    except Exception as e:
+        return {
+            "error": str(e),
+            "metadata": {
+                "resource": "transactions://opay/airtime/march",
+                "status": "failed"
+            }
+        }
