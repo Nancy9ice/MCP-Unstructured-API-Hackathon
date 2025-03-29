@@ -606,13 +606,13 @@ async def cancel_job(ctx: Context, job_id: str) -> str:
     except Exception as e:
         return f"Error canceling job: {str(e)}"
 
-@mcp.resource("greeting://{name}")
+@mcp.resource("greeting://name")
 def get_greeting(name: str) -> str:
     """Get a personalized greeting"""
     return f"Hello, {name}!"
 
-    
-@mcp.resource("transactions://{bank}/autoreversals/{month}")
+
+@mcp.resource("transactions://bank/autoreversals/month")
 def bank_month_autoreversals(bank: str, month: str) -> str:
     try:
         printer = PrettyPrinter()
