@@ -78,4 +78,77 @@ MONGO_DB_COLLECTION=
 
 Ensure that the **GOOGLEDRIVE_SERVICE_ACCOUNT_KEY** key is the file name of your service account key that should be present in your root folder too.
 
-3. Unfortunately, I couldn't configure resource templates because just as stated [here](https://github.com/modelcontextprotocol/python-sdk/issues/141#:~:text=Browser%20Chrome-,Additional%20context,-Although%20this%20will), resource templates are not visible in Claude Desktop as at when this project was done. So you would have to do some edits in the 
+3. Unfortunately, I didn't configure resource templates because just as stated [here](https://github.com/modelcontextprotocol/python-sdk/issues/141#:~:text=Browser%20Chrome-,Additional%20context,-Although%20this%20will), resource templates are not visible in Claude Desktop as at when this project was done. So you would have to do some edits on the static resource functions that have the @mcp.resource decorators in the [server.py file](https://github.com/Nancy9ice/MCP-Unstructured-API-Hackathon/blob/main/uns_mcp/server.py). The variable assignments were already made at the first few lines of the function so you can change the values to your desired values.
+
+4. Install dependencies by running the following commands:
+
+    ```bash
+    pip install uv
+    ```
+
+    ```bash
+    uv add "mcp[cli]"
+    ```
+
+    ```bash
+    uv pip install --upgrade unstructured-client python-dotenv
+    ```
+
+5. Run the server to check for errors.
+
+    ```bash
+    uv run uns_mcp/server.py
+    ```
+
+    Running the server with this command won't produce any output if your code has no errors. It's just a way of checking that there are no code errors before launching Claude Desktop.
+
+6. Integrate your code into Claude Desktop.
+
+    To setup your code in Claude Desktop, do the following:
+
+    - Go to `~/Library/Application Support/Claude/` and create a `claude_desktop_config.json` file.
+
+    - Add this content below to the file:
+    ``` bash
+    {
+        "mcpServers":
+        {
+            "UNS_MCP":
+            {
+                "command": "ABSOLUTE/PATH/TO/.local/bin/uv",
+                "args":
+                [
+                    "--directory",
+                    "ABSOLUTE/PATH/TO/UNS_MCP/FOLDER/IN/SOURCE/CODE",
+                    "run",
+                    "server.py"
+                ],
+                "env":
+                {
+                "UNSTRUCTURED_API_KEY":"<your key>"
+                },
+                "disabled": false
+            }
+        }
+    }
+    ```
+
+    You can get the unstructured api key after signing up on [unstructured api](https://unstructured.io/)
+
+    To get the absolute path to uv, run the command in your terminal: `which uv`.
+
+    Get the absolute path to the `uns_mcp` folder in the code you cloned from the github repo.
+
+    - Restart Claude Desktop
+
+    - If an error pops up at the top right of claude desktop, click the action button to see the logs
+
+7. Now that everything is fine on Claude Desktop, you can start making your prompts. To confirm that Claude Desktop recognizes the MCP server, you will see the hammer icon circled orange. You can click it to see the list of tools that the configured MCP server provides.
+
+The icon circled blue contains the configured prompt templates and resources that you can use to give predefined prompts and static data to Claude Desktop respectively.
+
+![Claude Desktop](<images/Claude Desktop Launch Page.png>)
+
+8. Watch this GIF to know how you can use this solution.
+
+
