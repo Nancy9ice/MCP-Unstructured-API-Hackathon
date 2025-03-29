@@ -47,9 +47,14 @@ from pprint import PrettyPrinter
 
 def get_mongodb_connection():
     load_dotenv(override=True)
+
     mongodb_connection_string = os.environ.get("MONGO_DB_CONNECTION_STRING")
+    mongdb_database = os.environ.get("MONGO_DB_DATABASE")
+    mongdodb_collection = os.environ.get("MONGO_DB_COLLECTION")
+
     client = MongoClient(mongodb_connection_string)
-    return client.sample_mflix.mcp_unstructured_api_db
+
+    return client.mongdb_database.mongdodb_collection
 
 
 def load_environment_variables() -> None:
@@ -607,10 +612,13 @@ async def cancel_job(ctx: Context, job_id: str) -> str:
         return f"Error canceling job: {str(e)}"
 
 
-@mcp.resource("transactions://kongapay/autoreversals/september")
-def kongapay_september_autoreversals():
+@mcp.resource("transactions://bank/autoreversals/month")
+def bank_month_autoreversals():
     try:
-        printer = PrettyPrinter()
+
+        ## Please edit these variables below to your choice
+        bank = "kongapay"
+        month = "september"
 
         transaction_data_collection = get_mongodb_connection()
 
@@ -620,9 +628,9 @@ def kongapay_september_autoreversals():
                     "index": "search-text-index",
                     "compound": {  # Requires ALL terms to match
                         "must": [
-                            { "text": { "query": "kongapay", "path": "text" } },
+                            { "text": { "query": bank, "path": "text" } },
                             { "text": { "query": "Auto-Reversal", "path": "text" } },
-                            { "text": { "query": "september", "path": "text" } }
+                            { "text": { "query": month, "path": "text" } }
                         ]
                     }
                 }
@@ -637,12 +645,12 @@ def kongapay_september_autoreversals():
         results = list(result)
         return {
             "metadata": {
-                "resource": "transactions://kongapay/autoreversals/september",
-                "description": "Kongapay autoreversals during September"
+                "resource": "transactions://bank/autoreversals/month",
+                "description": f"{bank} autoreversals during {month}"
             },
             "data": results,
-            "analysis_prompt": """
-                Analyze these Kongapay autoreversal transactions and provide:
+            "analysis_prompt": f"""
+                Analyze these {bank} autoreversal transactions and provide:
                 1. Total amount spent
                 2. Total number of purchases
             """
@@ -652,7 +660,7 @@ def kongapay_september_autoreversals():
         return {
             "error": str(e),
             "metadata": {
-                "resource": "transactions://kongapay/autoreversals/september",
+                "resource": "ttransactions://bank/autoreversals/month",
                 "status": "failed"
             }
         }
@@ -661,8 +669,7 @@ def kongapay_september_autoreversals():
 @mcp.resource("transactions://opay/airtime_purchases/march")
 def opay_march_airtime_purchases():
     try:
-        printer = PrettyPrinter()
-
+        
         transaction_data_collection = get_mongodb_connection()
 
         result = transaction_data_collection.aggregate([
@@ -712,7 +719,6 @@ def opay_march_airtime_purchases():
 @mcp.resource("transactions://pocketapp/electricity_bills")
 def pocketapp_electricity_bill_transactions():
     try:
-        printer = PrettyPrinter()
 
         transaction_data_collection = get_mongodb_connection()
 
