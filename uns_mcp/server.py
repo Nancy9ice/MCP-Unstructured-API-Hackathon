@@ -607,6 +607,12 @@ async def cancel_job(ctx: Context, job_id: str) -> str:
         return f"Error canceling job: {str(e)}"
 
 
+@mcp.resource("config://app")
+def get_config() -> str:
+    """Static configuration data"""
+    return "App configuration here"
+
+
 def create_starlette_app(mcp_server: Server, *, debug: bool = False) -> Starlette:
     """Create a Starlette application that can server the provied mcp server with SSE."""
     sse = SseServerTransport("/messages/")
@@ -705,8 +711,3 @@ def kongapay_september_autoreversals():
             }
         }
 
-
-@mcp.resource("config://app")
-def get_config() -> str:
-    """Static configuration data"""
-    return "App configuration here"
