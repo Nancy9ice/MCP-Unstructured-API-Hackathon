@@ -607,7 +607,7 @@ async def cancel_job(ctx: Context, job_id: str) -> str:
         return f"Error canceling job: {str(e)}"
 
 
-@mcp.resource("transactions://kongapay/airtime/march")
+@mcp.resource("transactions://kongapay/autoreversals/september")
 def kongapay_september_autoreversals():
     try:
         printer = PrettyPrinter()
@@ -637,12 +637,12 @@ def kongapay_september_autoreversals():
         results = list(result)
         return {
             "metadata": {
-                "resource": "transactions://kongapay/airtime/march",
-                "description": "Kongapay airtime purchases during March"
+                "resource": "transactions://kongapay/autoreversals/september",
+                "description": "Kongapay autoreversals during September"
             },
             "data": results,
             "analysis_prompt": """
-                Analyze these Kongapay airtime purchases and provide:
+                Analyze these Kongapay autoreversal transactions and provide:
                 1. Total amount spent
                 2. Total number of purchases
             """
@@ -652,7 +652,7 @@ def kongapay_september_autoreversals():
         return {
             "error": str(e),
             "metadata": {
-                "resource": "transactions://kongapay/airtime/march",
+                "resource": "transactions://kongapay/autoreversals/september",
                 "status": "failed"
             }
         }
