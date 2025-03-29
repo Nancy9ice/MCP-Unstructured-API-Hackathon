@@ -42,6 +42,10 @@ The following features in Unstructured made the data usable:
 
 - Enrichment: This feature was important to me because I didn't want to build a RAG application if I used embeddings. Instead, I skipped the embeddings feature and used this enrichment feature to summarize my data using an integrated Large Language Model. This made it easy to summarize the information on the account statements which were then sent to the Mongodb destination.
 
+Here's a screenshot of how the workflow looks:
+
+![Workflow](<images/Workflow Image.png>)
+
 The good thing about this solution is that you can do every single thing from Claude Desktop from creating the Google Drive Source to moving the summarized information to MongoDB to asking Claude questions about your transaction history. Except of course the part of creating a search index on the MongoDB interface so that querying the database to answer your questions can be easy and more informative.
 
 In summary, here's what you can do with this solution leveraging Unstructured API and FastMCP:
