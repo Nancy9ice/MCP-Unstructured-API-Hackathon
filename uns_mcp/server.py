@@ -607,11 +607,10 @@ async def cancel_job(ctx: Context, job_id: str) -> str:
         return f"Error canceling job: {str(e)}"
 
 
-def create_greeting_resource(name):
-    @mcp.resource("greeting://{name}")
-    def get_greeting(name: str) -> str:
-        """Get a personalized greeting"""
-        return f"Hello, {name}!"
+@mcp.resource("users://{user_id}/profile")
+def get_user_profile(user_id: str) -> str:
+    """Dynamic user data"""
+    return f"Profile data for user {user_id}"
 
 
 def resource_bank_autoreversals(bank, month):
