@@ -45,8 +45,6 @@ from connectors import register_connectors
 from pymongo import MongoClient
 from pprint import PrettyPrinter
 
-printer = PrettyPrinter()
-
 def get_mongodb_connection():
     load_dotenv(override=True)
     mongodb_connection_string = os.environ.get("MONGO_DB_CONNECTION_STRING")
@@ -685,7 +683,7 @@ def kongapay_september_autoreversals():
             }
         ])
         results = list(result)
-        printer.pprint({
+        return {
             "metadata": {
                 "resource": "transactions://opay/airtime/march",
                 "description": "Opay airtime purchases during March"
@@ -696,7 +694,7 @@ def kongapay_september_autoreversals():
                 1. Total amount spent
                 2. Total number of purchases
             """
-        })
+        }
         
     except Exception as e:
         return {
