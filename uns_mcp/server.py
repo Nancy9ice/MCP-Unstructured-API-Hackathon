@@ -607,60 +607,6 @@ async def cancel_job(ctx: Context, job_id: str) -> str:
         return f"Error canceling job: {str(e)}"
 
 
-@mcp.resource("config://app")
-def get_config() -> str:
-    """Static configuration data"""
-    return "App configuration here"
-
-
-def create_starlette_app(mcp_server: Server, *, debug: bool = False) -> Starlette:
-    """Create a Starlette application that can server the provied mcp server with SSE."""
-    sse = SseServerTransport("/messages/")
-
-    async def handle_sse(request: Request) -> None:
-        async with sse.connect_sse(
-            request.scope,
-            request.receive,
-            request._send,  # noqa: SLF001
-        ) as (read_stream, write_stream):
-            await mcp_server.run(
-                read_stream,
-                write_stream,
-                mcp_server.create_initialization_options(),
-            )
-
-    return Starlette(
-        debug=debug,
-        routes=[
-            Route("/sse", endpoint=handle_sse),
-            Mount("/messages/", app=sse.handle_post_message),
-        ],
-    )
-
-
-if __name__ == "__main__":
-    load_environment_variables()
-    if len(sys.argv) < 2:
-        # server is directly being invoked from client
-        mcp.run()
-    else:
-        # server is running as HTTP SSE server
-        # reference: https://github.com/sidharthrajaram/mcp-sse
-        mcp_server = mcp._mcp_server  # noqa: WPS437
-
-        import argparse
-
-        parser = argparse.ArgumentParser(description="Run MCP SSE-based server")
-        parser.add_argument("--host", default="127.0.0.1", help="Host to bind to")
-        parser.add_argument("--port", type=int, default=8080, help="Port to listen on")
-        args = parser.parse_args()
-
-        # Bind SSE request handling to MCP server
-        starlette_app = create_starlette_app(mcp_server, debug=True)
-
-        uvicorn.run(starlette_app, host=args.host, port=args.port)
-
-
 @mcp.resource("transactions://opay/airtime/march")
 def kongapay_september_autoreversals():
     try:
@@ -710,4 +656,53 @@ def kongapay_september_autoreversals():
                 "status": "failed"
             }
         }
+
+
+
+def create_starlette_app(mcp_server: Server, *, debug: bool = False) -> Starlette:
+    """Create a Starlette application that can server the provied mcp server with SSE."""
+    sse = SseServerTransport("/messages/")
+
+    async def handle_sse(request: Request) -> None:
+        async with sse.connect_sse(
+            request.scope,
+            request.receive,
+            request._send,  # noqa: SLF001
+        ) as (read_stream, write_stream):
+            await mcp_server.run(
+                read_stream,
+                write_stream,
+                mcp_server.create_initialization_options(),
+            )
+
+    return Starlette(
+        debug=debug,
+        routes=[
+            Route("/sse", endpoint=handle_sse),
+            Mount("/messages/", app=sse.handle_post_message),
+        ],
+    )
+
+
+if __name__ == "__main__":
+    load_environment_variables()
+    if len(sys.argv) < 2:
+        # server is directly being invoked from client
+        mcp.run()
+    else:
+        # server is running as HTTP SSE server
+        # reference: https://github.com/sidharthrajaram/mcp-sse
+        mcp_server = mcp._mcp_server  # noqa: WPS437
+
+        import argparse
+
+        parser = argparse.ArgumentParser(description="Run MCP SSE-based server")
+        parser.add_argument("--host", default="127.0.0.1", help="Host to bind to")
+        parser.add_argument("--port", type=int, default=8080, help="Port to listen on")
+        args = parser.parse_args()
+
+        # Bind SSE request handling to MCP server
+        starlette_app = create_starlette_app(mcp_server, debug=True)
+
+        uvicorn.run(starlette_app, host=args.host, port=args.port)
 
