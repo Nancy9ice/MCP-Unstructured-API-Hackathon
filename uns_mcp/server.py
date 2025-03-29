@@ -614,55 +614,57 @@ def create_greeting_resource(name):
         return f"Hello, {name}!"
 
 
-@mcp.resource("transactions://bank/autoreversals/month")
-def bank_month_autoreversals(bank: str, month: str) -> str:
-    try:
-        printer = PrettyPrinter()
+def resource_bank_autoreversals(bank, month):
+    @mcp.resource("transactions://bank/autoreversals/month")
+    def bank_month_autoreversals():
+        try:
+            printer = PrettyPrinter()
 
-        transaction_data_collection = get_mongodb_connection()
+            transaction_data_collection = get_mongodb_connection()
 
-        result = transaction_data_collection.aggregate([
-            {
-                "$search": {
-                    "index": "search-text-index",
-                    "compound": {  # Requires ALL terms to match
-                        "must": [
-                            { "text": { "query": bank, "path": "text" } },
-                            { "text": { "query": "Auto-Reversal", "path": "text" } },
-                            { "text": { "query": month, "path": "text" } }
-                        ]
+            result = transaction_data_collection.aggregate([
+                {
+                    "$search": {
+                        "index": "search-text-index",
+                        "compound": {  # Requires ALL terms to match
+                            "must": [
+                                { "text": { "query": bank, "path": "text" } },
+                                { "text": { "query": "Auto-Reversal", "path": "text" } },
+                                { "text": { "query": month, "path": "text" } }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "$project": {
+                        "text": 1,
+                        "_id": 0
                     }
                 }
-            },
-            {
-                "$project": {
-                    "text": 1,
-                    "_id": 0
+            ])
+            results = list(result)
+            return {
+                "metadata": {
+                    "resource": f"transactions://{bank}/autoreversals/{month}",
+                    "description": f"{bank.capitalize()} autoreversals during {month.capitalize()}"
+                },
+                "data": results,
+                "analysis_prompt": f"""
+                    Analyze these {bank.capitalize()} autoreversal transactions and provide:
+                    1. Total amount spent
+                    2. Total number of purchases
+                """
+            }
+                
+        except Exception as e:
+            return {
+                "error": str(e),
+                "metadata": {
+                    "resource": f"transactions://{bank}/autoreversals/{month.lower()}",
+                    "status": "failed"
                 }
             }
-        ])
-        results = list(result)
-        return {
-            "metadata": {
-                "resource": f"transactions://{bank}/autoreversals/{month}",
-                "description": f"{bank.capitalize()} autoreversals during {month.capitalize()}"
-            },
-            "data": results,
-            "analysis_prompt": f"""
-                Analyze these {bank.capitalize()} autoreversal transactions and provide:
-                1. Total amount spent
-                2. Total number of purchases
-            """
-        }
-            
-    except Exception as e:
-        return {
-            "error": str(e),
-            "metadata": {
-                "resource": f"transactions://{bank}/autoreversals/{month.lower()}",
-                "status": "failed"
-            }
-        }
+    return bank_month_autoreversals
 
 
 @mcp.resource("transactions://opay/airtime_purchases/march")
