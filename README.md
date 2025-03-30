@@ -2,6 +2,8 @@
 
 ## Invoice Tracker
 
+![Project Architecture](<images/Invoice Tracker Project Architecture (1).png>)
+
 This project was built as an inspiration from the [hackathon](https://unstructured.io/blog/unstructured-mcp-virtual-hackathon-build-share-and-win) hosted by [Unstructured](https://unstructured.io/).
 
 Let me briefly explain the problem I intended to solve...
