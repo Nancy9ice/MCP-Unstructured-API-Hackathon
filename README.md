@@ -1,6 +1,6 @@
 # MCP-Unstructured-API-Hackathon
 
-## Transaction Tracker
+## Invoice Tracker
 
 This project was built as an inspiration from the [hackathon](https://unstructured.io/blog/unstructured-mcp-virtual-hackathon-build-share-and-win) hosted by [Unstructured](https://unstructured.io/).
 
@@ -8,19 +8,25 @@ Let me briefly explain the problem I intended to solve...
 
 ## The Problem
 
-It's almost the end of the month and salary comes in. However, it's just one week or two weeks into the next month and my salary has already gone down by half or more.
+As a business person, have you been in any of these situations:
 
-I'm sitting and wondering what and where and how I have spent the money but I can't seem to understand what I spent it on. Looking at my account statement can be hectic as the numbers dance around my head but I still can't figure out what ate into the money.
+- You're casually going through your emails when you see an email reminder from a vendor that makes you realize that you're owing him for a service that could be critical to your business if shutdown.
 
-Who will help me summarize my account statement just so I can be tracking my spendings. I don't have the luxury of doing that myself and I can't pay someone to do that. I mean, I'm trying to cut cost here. 
+- Your bookkeeper asks, "Hey, did we pay this?" and you’re suddenly digging through six months of Gmail like a detective.
 
-**Is this a problem you can relate to?**
+- Your bank balance looks suspicious. "Who the heck is ‘Premium Services LLC,’ and why did they charge us $2,500?" Spoiler: It’s that obscure SaaS tool your team forgot about.
 
-If yes, what could help you and I?
+- Your accountant asks for all Q2 utility bills. You spend 45 minutes combing through Dropbox, Slack, and that one intern’s forwarded email chain from April.
+
+- You accidentally pay the same invoice twice—and now you’re stuck begging Vendor Guy for a refund.
+
+**Can you relate to any of these scenarios?**
+
+If yes, what could help you?
 
 An AI Assistant? Hmmmmmm. Probably.
 
-But how can this AI assistant get this account statement in pdf formats and still interpret our account statements properly after we ask it certain questions.
+But how can this AI assistant get the invoices in pdf formats and still interpret them properly after you ask certain questions.
 
 That's the problem I intend to solve.
 
@@ -32,7 +38,7 @@ I'm not an AI engineer at least not for now (or anytime soon). I'm just playing 
 
 Now that you're aware of that. Let me brief you on my solution to the problem I described above.
 
-With the help of Unstructured API MCP server, I built an MCP server that interfaces with Claude Desktop so that you can move multiple pdf files containing your account statements and transaction history (whether from same bank or multiple banks) from Google Drive to MongoDB. Before the movement to MongoDB, some transformations were made on the data using features on Unstructured (P.S. Unstructured is a Product).
+With the help of Unstructured API MCP server, I built an MCP server that interfaces with Claude Desktop so that you can move multiple pdf files containing vendor bill invoices from Google Drive to MongoDB. Before the movement to MongoDB, some transformations were made on the data using features on Unstructured (P.S. Unstructured is a Product).
 
 The following features in Unstructured made the data usable:
 
@@ -40,17 +46,17 @@ The following features in Unstructured made the data usable:
 
 - Chunking: The chunking feature breaks the data into parts based on the stated criteria (in this case, chunked by similarity). It was also chunked by max of 1000 characters
 
-- Enrichment: This feature was important to me because I didn't want to build a RAG application if I used embeddings. Instead, I skipped the embeddings feature and used this enrichment feature to summarize my data using an integrated Large Language Model. This made it easy to summarize the information on the account statements which were then sent to the Mongodb destination.
+- Enrichment: This feature was important to me because I didn't want to build a RAG application if I used embeddings. Instead, I skipped the embeddings feature and used this enrichment feature to summarize my data using an integrated Large Language Model. This made it easy to summarize the information on the invoice documents which were then sent to the Mongodb destination.
 
 Here's a screenshot of how the workflow looks:
 
 ![Workflow](<images/Workflow Image.png>)
 
-The good thing about this solution is that you can do every single thing from Claude Desktop from creating the Google Drive Source to moving the summarized information to MongoDB to asking Claude questions about your transaction history. Except of course the part of creating a search index on the MongoDB interface so that querying the database to answer your questions can be easy and more informative.
+The good thing about this solution is that you can do every single thing from Claude Desktop from creating the Google Drive Source to moving the summarized information to MongoDB to asking Claude questions about your invoices. Except of course the part of creating a search index on the MongoDB interface so that querying the database to answer your questions can be easy and more informative.
 
 In summary, here's what you can do with this solution leveraging Unstructured API MCP Server:
 
-- Create a Google Drive source containing your account statements directly from Claude Desktop
+- Create a Google Drive source containing your invoice documents directly from Claude Desktop
 
 - Create a MongoDB destination directly from Claude Desktop 
 
@@ -62,9 +68,11 @@ In summary, here's what you can do with this solution leveraging Unstructured AP
 
 - Trigger or run the workflow directly from Claude Desktop
 
-- Ask questions on Claude Desktop about your transaction history
+- Ask questions on Claude Desktop about the vendor invoices
 
 - And more...
+
+**It is important to note that the invoice pdf files used in this project were invoice documents sourced from Google Images**
 
 Now I'll get into the details on how to set this up.
 
