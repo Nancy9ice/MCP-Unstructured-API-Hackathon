@@ -72,7 +72,7 @@ In summary, here's what you can do with this solution leveraging Unstructured AP
 
 - And more...
 
-**It is important to note that the invoice pdf files used in this project were invoice documents sourced from Google Images**
+**It is important to note that the invoice pdf files used in this project were invoice documents sourced from Google Images and converted to pdfs**
 
 Now I'll get into the details on how to set this up.
 
