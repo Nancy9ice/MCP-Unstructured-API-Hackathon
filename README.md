@@ -76,6 +76,17 @@ In summary, here's what you can do with this solution leveraging Unstructured AP
 
 Now I'll get into the details on how to set this up.
 
+## Prerequisites
+- Have Python installed
+
+- Google Cloud Service Account key: You need this to connect to your Google drive that contains the invoice pdfs. You can follow the guide by Unstructured [here](https://youtu.be/ZiRD7hC-wh8?si=K3RLi9BF2S9-Tq2W) on how to set it up
+
+- MongoDB Database and Collection: You need this to host the transformed unstructured data that's now in a semi-structured format. You can follow the guide [here](https://youtu.be/g6qDfbg808M?si=muQnsCuoZcYwB5r4) to set it up.
+
+- Unstructured API Key: You need the API key to access the functionalities of Unstructured API. Follow this [guide](https://youtu.be/FucugLkYB6M?si=Q1TURP3RTdUe3g5S) to set it up
+
+- Claude Desktop: This is where you can access the MCP server so download it [here](https://claude.ai/download)
+
 ## Setting up Your Environment
 
 1. Clone the repository
@@ -167,6 +178,6 @@ The icon circled blue contains the configured prompt templates and resources tha
 
 ![Claude Desktop](<images/Claude Desktop Launch Page.png>)
 
-8. Watch this GIF to know how you can use this solution.
+8. You can view the [project demo screenshots here](https://amandinancy16.medium.com/how-i-built-an-invoice-tracker-using-unstructured-api-mcp-server-0bafebe6eb3d#7636)
 
 
