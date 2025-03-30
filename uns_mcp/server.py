@@ -619,26 +619,19 @@ async def cancel_job(ctx: Context, job_id: str) -> str:
         return f"Error canceling job: {str(e)}"
 
 
-@mcp.resource("transactions://bank/autoreversals/month")
-def bank_month_autoreversals():
+@mcp.resource("invoices://vendor")
+def vendor_bills():
     try:
 
-        ## Please edit these variables below to your choice
-        bank = "kongapay"
-        month = "september"
+        invoice_data_collection = get_mongodb_connection()
 
-        transaction_data_collection = get_mongodb_connection()
-
-        result = transaction_data_collection.aggregate([
+        result = invoice_data_collection.aggregate([
             {
                 "$search": {
                     "index": "search-text-index",
-                    "compound": {  # Requires ALL terms to match
-                        "must": [
-                            { "text": { "query": bank, "path": "text" } },
-                            { "text": { "query": "Auto-Reversal", "path": "text" } },
-                            { "text": { "query": month, "path": "text" } }
-                        ]
+                    "text": {
+                        "query": ["from", "by"],
+                        "path": "text"
                     }
                 }
             },
@@ -652,14 +645,14 @@ def bank_month_autoreversals():
         results = list(result)
         return {
             "metadata": {
-                "resource": "transactions://bank/autoreversals/month",
-                "description": f"{bank} autoreversals during {month}"
+                "resource": "invoices://vendor",
+                "description": "all vendor bills"
             },
             "data": results,
             "analysis_prompt": f"""
-                Analyze these {bank} autoreversal transactions and provide:
-                1. Total amount spent
-                2. Total number of purchases
+                Analyze these vendor bills and provide:
+                1. Total amount spent on each vendor
+                2. Total number of purchases from each vendor
             """
         }
         
@@ -667,32 +660,30 @@ def bank_month_autoreversals():
         return {
             "error": str(e),
             "metadata": {
-                "resource": "transactions://bank/autoreversals/month",
+                "resource": "invoices://vendor",
                 "status": "failed"
             }
         }
 
 
-@mcp.resource("transactions://bank/airtime_purchases/month")
-def bank_month_airtime_purchases():
+@mcp.resource("invoices://vendor/year")
+def get_vendor_bills_by_year():
     try:
         
         ## Please edit these variables below to your choice
 
-        bank = "opay"
-        month = "march"
+        year = "2024"
 
-        transaction_data_collection = get_mongodb_connection()
+        invoice_data_collection = get_mongodb_connection()
 
-        result = transaction_data_collection.aggregate([
+        result = invoice_data_collection.aggregate([
             {
                 "$search": {
                     "index": "search-text-index",
                     "compound": {  # Requires ALL terms to match
                         "must": [
-                            { "text": { "query": bank, "path": "text" } },
-                            { "text": { "query": "airtime", "path": "text" } },
-                            { "text": { "query": month, "path": "text" } }
+                            { "text": { "query": year, "path": "text" } },
+                            { "text": { "query": ["from", "by"], "path": "text" } }
                         ]
                     }
                 }
@@ -707,14 +698,14 @@ def bank_month_airtime_purchases():
         results = list(result)
         return {
             "metadata": {
-                "resource": "transactions://bank/airtime_purchases/month",
-                "description": f"{bank} airtime purchases in {month}"
+                "resource": "invoices://vendor/year",
+                "description": f"vendor bills paid for in {year}"
             },
             "data": results,
             "analysis_prompt": f"""
-                Analyze these {bank} airtime purchases and provide:
-                1. Total amount spent
-                2. Total number of purchases
+                Analyze these vendor invoices and provide:
+                1. Vendor bills due in {year}
+                2. Total amount owed to the vendor in {year}
             """
         }
         
@@ -722,30 +713,30 @@ def bank_month_airtime_purchases():
         return {
             "error": str(e),
             "metadata": {
-                "resource": "transactions://bank/airtime_purchases/month",
+                "resource": "invoices://vendor/year",
                 "status": "failed"
             }
         }
 
 
-@mcp.resource("transactions://bank/electricity_bills")
-def bank_electricity_bill_transactions():
+@mcp.resource("invoices://vendor/service")
+def get_vendor_by_service():
     try:
         
         ## Please edit these variables below to your choice
 
-        bank = "pocketapp"
+        service = "design"
 
-        transaction_data_collection = get_mongodb_connection()
+        invoice_data_collection = get_mongodb_connection()
 
-        result = transaction_data_collection.aggregate([
+        result = invoice_data_collection.aggregate([
             {
                 "$search": {
                     "index": "search-text-index",
                     "compound": {  # Requires ALL terms to match
                         "must": [
-                            { "text": { "query": bank, "path": "text" } },
-                            { "text": { "query": "electricity", "path": "text" } }
+                            { "text": { "query": service, "path": "text" } },
+                            { "text": { "query": ["from", "by"], "path": "text" } }
                         ]
                     }
                 }
@@ -760,14 +751,14 @@ def bank_electricity_bill_transactions():
         results = list(result)
         return {
             "metadata": {
-                "resource": "transactions://bank/electricity_bills",
-                "description": f"{bank} electricity bills"
+                "resource": "invoices://vendor/service",
+                "description": f"vendor services"
             },
             "data": results,
             "analysis_prompt": f"""
-                Analyze these electricity bill transactions on {bank} and provide:
-                1. Total amount spent
-                2. Total number of purchases
+                Analyze these vendor bill services and provide:
+                1. Total amount spent on {service} services
+                2. The vendor(s) providing the {service} services
             """
         }
         
@@ -775,7 +766,7 @@ def bank_electricity_bill_transactions():
         return {
             "error": str(e),
             "metadata": {
-                "resource": "transactions://bank/electricity_bills",
+                "resource": "invoices://vendor/service",
                 "status": "failed"
             }
         }
