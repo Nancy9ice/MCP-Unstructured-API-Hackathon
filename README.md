@@ -32,7 +32,7 @@ I'm not an AI engineer at least not for now (or anytime soon). I'm just playing 
 
 Now that you're aware of that. Let me brief you on my solution to the problem I described above.
 
-With the help of Unstructured API and FastMCP, I built an MCP server that interfaces with Claude Desktop so that you can move multiple pdf files containing your account statements and transaction history (whether from same bank or multiple banks) from Google Drive to MongoDB. Before the movement to MongoDB, some transformations were made on the data using features on Unstructured (P.S. Unstructured is a Product).
+With the help of Unstructured API MCP server, I built an MCP server that interfaces with Claude Desktop so that you can move multiple pdf files containing your account statements and transaction history (whether from same bank or multiple banks) from Google Drive to MongoDB. Before the movement to MongoDB, some transformations were made on the data using features on Unstructured (P.S. Unstructured is a Product).
 
 The following features in Unstructured made the data usable:
 
@@ -48,7 +48,7 @@ Here's a screenshot of how the workflow looks:
 
 The good thing about this solution is that you can do every single thing from Claude Desktop from creating the Google Drive Source to moving the summarized information to MongoDB to asking Claude questions about your transaction history. Except of course the part of creating a search index on the MongoDB interface so that querying the database to answer your questions can be easy and more informative.
 
-In summary, here's what you can do with this solution leveraging Unstructured API and FastMCP:
+In summary, here's what you can do with this solution leveraging Unstructured API MCP Server:
 
 - Create a Google Drive source containing your account statements directly from Claude Desktop
 
