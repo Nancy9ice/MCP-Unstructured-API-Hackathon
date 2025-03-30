@@ -623,12 +623,14 @@ async def cancel_job(ctx: Context, job_id: str) -> str:
 def vendor_bills():
     try:
 
+        index_name = "search-text-index"
+
         invoice_data_collection = get_mongodb_connection()
 
         result = invoice_data_collection.aggregate([
             {
                 "$search": {
-                    "index": "search-text-index",
+                    "index": index_name,
                     "text": {
                         "query": ["from", "by"],
                         "path": "text"
@@ -673,13 +675,14 @@ def get_vendor_bills_by_year():
         ## Please edit these variables below to your choice
 
         year = "2024"
+        index_name = "search-text-index"
 
         invoice_data_collection = get_mongodb_connection()
 
         result = invoice_data_collection.aggregate([
             {
                 "$search": {
-                    "index": "search-text-index",
+                    "index": index_name,
                     "compound": {  # Requires ALL terms to match
                         "must": [
                             { "text": { "query": year, "path": "text" } },
@@ -726,13 +729,14 @@ def get_vendor_by_service():
         ## Please edit these variables below to your choice
 
         service = "design"
+        index_name = "search-text-index"
 
         invoice_data_collection = get_mongodb_connection()
 
         result = invoice_data_collection.aggregate([
             {
                 "$search": {
-                    "index": "search-text-index",
+                    "index": index_name,
                     "compound": {  # Requires ALL terms to match
                         "must": [
                             { "text": { "query": service, "path": "text" } },
